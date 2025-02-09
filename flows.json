@@ -1,0 +1,1608 @@
+[
+    {
+        "id": "d8527068f6276de4",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7fc62c4ab0390345",
+        "type": "http request",
+        "z": "d8527068f6276de4",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://192.168.4.1/data",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 190,
+        "y": 200,
+        "wires": [
+            [
+                "d9b8cc05fcf858c5"
+            ]
+        ]
+    },
+    {
+        "id": "4f116be3f704da40",
+        "type": "inject",
+        "z": "d8527068f6276de4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "2",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 170,
+        "y": 160,
+        "wires": [
+            [
+                "7fc62c4ab0390345"
+            ]
+        ]
+    },
+    {
+        "id": "811db637f9603a13",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "Cylinder Temperature",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "cylinderTemperature",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "d9b8cc05fcf858c5",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Bytes",
+        "func": "// Split the string into an array of hex values\nlet hexArray = msg.payload.split(\" \");\n\n// Convert each hex string into a byte (integer)\nlet byteArray = hexArray.map(val => parseInt(val, 16));\n\n// Convert the byte array to a Buffer\nlet buffer = Buffer.from(byteArray);\n\n// Send the byte output\nmsg.payload = buffer;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 260,
+        "wires": [
+            [
+                "f204b019b06578ae",
+                "78f04d766b8d77f7",
+                "c938d9823336e975",
+                "987fb6b455d36edb",
+                "5bed35515bf3fcae",
+                "10be8713532319cb",
+                "4df654340c1ebd88",
+                "f9bf66437860d886",
+                "e4df11c52863e8be",
+                "f379c5da868bb4ca",
+                "bd6f1dcbf1d9f846",
+                "4b957e4e19039b69",
+                "641443d709aa3123",
+                "542e32c55c04b45a",
+                "0eb6eb5b1174e755",
+                "ce62e9123816bb0c"
+            ]
+        ]
+    },
+    {
+        "id": "bd6f1dcbf1d9f846",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Manifold Air Pressure",
+        "func": "// Function to parse manifold air pressure from payload\nfunction parseManifoldAirPressure(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract manifold air pressure\");\n        return null;\n    }\n    \n    let lowByte = payload[18];  // 19th byte (zero-indexed)\n    let highByte = payload[19]; // 20th byte (zero-indexed)\n    \n    let rawValue = (highByte << 8) | lowByte; // Combine bytes (little-endian)\n    // Convert to signed 16-bit integer\n    if (rawValue & 0x8000) {\n        rawValue = rawValue - 0x10000;\n    }\n    let airPressure = rawValue / 10.0; // Convert to air Pressure (assuming scale factor of 10)\n    \n    return airPressure;\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.manifoldAirPressure = parseManifoldAirPressure(msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 440,
+        "wires": [
+            [
+                "ae2befe8bbcef78d",
+                "4929c68c1032ce38"
+            ]
+        ]
+    },
+    {
+        "id": "f379c5da868bb4ca",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Barometric Pressure",
+        "func": "// Function to parse barometric pressure from payload\nfunction parseBarometricPressure(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract barometric pressure\");\n        return null;\n    }\n    \n    let lowByte = payload[16];  // 17th byte (zero-indexed)\n    let highByte = payload[17]; // 18th byte (zero-indexed)\n    \n    let rawValue = (highByte << 8) | lowByte; // Combine bytes (little-endian)\n    // Convert to signed 16-bit integer\n    if (rawValue & 0x8000) {\n        rawValue = rawValue - 0x10000;\n    }\n    let baroPressure = rawValue / 10.0; // Convert to pressure (assuming scale factor of 10)\n    \n    return baroPressure;\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.barometricPressure = parseBarometricPressure(msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 400,
+        "wires": [
+            [
+                "f48495a48acc19a2",
+                "36bc3c5f8559e46d"
+            ]
+        ]
+    },
+    {
+        "id": "641443d709aa3123",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Cylinder Temperature",
+        "func": "// Function to parse cylinder temperature from payload\nfunction parseCylinderTemperature(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract cylinder temperature\");\n        return null;\n    }\n    \n    let lowByte = payload[22];  // 23th byte (zero-indexed)\n    let highByte = payload[23]; // 24th byte (zero-indexed)\n    \n    let rawValue = (highByte << 8) | lowByte; // Combine bytes (little-endian)\n    // Convert to signed 16-bit integer\n    if (rawValue & 0x8000) {\n        rawValue = rawValue - 0x10000;\n    }\n    let cylTemperature = rawValue / 10.0; // Convert to cylinder Temperature (assuming scale factor of 10)\n    \n    return cylTemperature;\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.cylinderTemperature = parseCylinderTemperature(msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 520,
+        "wires": [
+            [
+                "811db637f9603a13",
+                "f514d53ced22ba87"
+            ]
+        ]
+    },
+    {
+        "id": "f48495a48acc19a2",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "Barometric Pressure",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "barometricPressure",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "ae2befe8bbcef78d",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "Manifold Air Pressure",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "manifoldAirPressure",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "34d5abfea9b93de2",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "Manifold Air Temperature",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "manifoldTemperature",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1030,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "0eb6eb5b1174e755",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Battery Voltage",
+        "func": "// Function to parse battery voltage from payload\nfunction parseBatteryVoltage(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract battery voltage\");\n        return null;\n    }\n    \n    let lowByte = payload[26];  // 27th byte (zero-indexed)\n    let highByte = payload[27]; // 28th byte (zero-indexed)\n    \n    let rawValue = (highByte << 8) | lowByte; // Combine bytes (little-endian)\n    // Convert to signed 16-bit integer\n    if (rawValue & 0x8000) {\n        rawValue = rawValue - 0x10000;\n    }\n    let voltage = rawValue / 10.0; // Convert to voltage (assuming scale factor of 10)\n    \n    return voltage;\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.batteryVoltage = parseBatteryVoltage(msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 600,
+        "wires": [
+            [
+                "e1427ab757c1132c",
+                "a3681a48c40ca379"
+            ]
+        ]
+    },
+    {
+        "id": "542e32c55c04b45a",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Throttle Position",
+        "func": "// Function to parse throttle position from payload\nfunction parseThrottlePosition(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract throttle position\");\n        return null;\n    }\n    \n    let lowByte = payload[24];  // 25th byte (zero-indexed)\n    let highByte = payload[25]; // 26th byte (zero-indexed)\n    \n    let rawValue = (highByte << 8) | lowByte; // Combine bytes (little-endian)\n    // Convert to signed 16-bit integer\n    if (rawValue & 0x8000) {\n        rawValue = rawValue - 0x10000;\n    }\n    let throttle = rawValue / 10.0; // Convert to throttle (assuming scale factor of 10)\n    \n    return throttle;\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.throttlePosition = parseThrottlePosition(msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 560,
+        "wires": [
+            [
+                "e58c549b8475d228",
+                "eef98cd53bdf4dfb"
+            ]
+        ]
+    },
+    {
+        "id": "4b957e4e19039b69",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Manifold Air Temperature",
+        "func": "// Function to parse manifold air temperature from payload\nfunction parseManifoldAirTemperature(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract manifold air temperature\");\n        return null;\n    }\n    \n    let lowByte = payload[20];  // 21th byte (zero-indexed)\n    let highByte = payload[21]; // 22th byte (zero-indexed)\n    \n    let rawValue = (highByte << 8) | lowByte; // Combine bytes (little-endian)\n    // Convert to signed 16-bit integer\n    if (rawValue & 0x8000) {\n        rawValue = rawValue - 0x10000;\n    }\n    let airTemperature = rawValue / 10.0; // Convert to air Temperature (assuming scale factor of 10)\n    \n    return airTemperature;\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.manifoldTemperature = parseManifoldAirTemperature(msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 480,
+        "wires": [
+            [
+                "34d5abfea9b93de2",
+                "83f57acc47658778"
+            ]
+        ]
+    },
+    {
+        "id": "e58c549b8475d228",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "Throttle Position",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "throttlePosition",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1000,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "e1427ab757c1132c",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "Battery Voltage",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "batteryVoltage",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1000,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "57ab73812c8b4740",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "Rotating Speed",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "rotatingSpeed",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1000,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "f204b019b06578ae",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Injection PW1",
+        "func": "// Function to parse injection PW1 from payload\nfunction parseInjectionPW1(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract injection PW1\");\n        return null;\n    }\n    \n    let lowByte = payload[2];  // 3rd byte (zero-indexed)\n    let highByte = payload[3]; // 4th byte (zero-indexed)\n    \n    let rawValue = (highByte << 8) | lowByte; // Combine bytes (little-endian)\n    let injPW1 = rawValue; // Convert to injection PW1 (assuming scale factor of 10)\n    \n    return injPW1;\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.injectionPW1 = parseInjectionPW1(msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 40,
+        "wires": [
+            [
+                "d55ccc4d569a77d9",
+                "71c6eaa9bfd9aad5"
+            ]
+        ]
+    },
+    {
+        "id": "9c8ccb836b7e7943",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Seconds",
+        "func": "// Function to parse seconds from payload\nfunction parseSeconds(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to seconds\");\n        return null;\n    }\n    \n    let lowByte = payload[0];  // 1st byte (zero-indexed)\n    let highByte = payload[1]; // 2nd byte (zero-indexed)\n    \n    let rawValue = (highByte << 8) | lowByte; // Combine bytes (little-endian)\n    let sec = rawValue / 10.0; // Convert to seconds (assuming scale factor of 10)\n    \n    return sec;\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.seconds = parseSeconds(msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 100,
+        "y": 400,
+        "wires": [
+            [
+                "7213e2d674e56696"
+            ]
+        ]
+    },
+    {
+        "id": "c938d9823336e975",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Rotating Speed",
+        "func": "// Function to parse rotating speed from payload\nfunction parseRotatingSpeed(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract rotating speed\");\n        return null;\n    }\n    \n    let lowByte = payload[6];  // 7th byte (zero-indexed)\n    let highByte = payload[7]; // 8th byte (zero-indexed)\n    \n    let rawValue = (highByte << 8) | lowByte; // Combine bytes (little-endian)\n    let speed = rawValue; // Convert to rotating speed (assuming scale factor of 10)\n    \n    return speed;\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.rotatingSpeed = parseRotatingSpeed(msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 120,
+        "wires": [
+            [
+                "57ab73812c8b4740",
+                "46a9d2f64f97e54f"
+            ]
+        ]
+    },
+    {
+        "id": "7213e2d674e56696",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "Seconds",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "seconds",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 260,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "d55ccc4d569a77d9",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "Injection PW1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "injectionPW1",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1000,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "9f6afd62128074d4",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "Injection PW2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "injectionPW2",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1000,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "78f04d766b8d77f7",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Injection PW2",
+        "func": "// Function to parse injection PW2 from payload\nfunction parseInjectionPW2(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract injection PW2\");\n        return null;\n    }\n\n    let lowByte = payload[4];  // 5th byte (zero-indexed)\n    let highByte = payload[5]; // 6th byte (zero-indexed)\n\n    let rawValue = (highByte << 8) | lowByte; // Combine bytes (little-endian)\n    let injPW1 = rawValue; // Convert to injection PW2 (assuming scale factor of 10)\n\n    return injPW1;\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.injectionPW2 = parseInjectionPW2(msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 80,
+        "wires": [
+            [
+                "9f6afd62128074d4",
+                "465dc144e53d41e6"
+            ]
+        ]
+    },
+    {
+        "id": "ce3658bf6059281a",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "WBO2_EN1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "WBO2_EN1",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 990,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "f9bf66437860d886",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "WBO2_EN1",
+        "func": "// Function to parse WBO2_EN1 from payload (single unsigned byte)\nfunction parseWBO2_EN1(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract WBO2_EN1\");\n        return null;\n    }\n\n    let wb02_en1 = payload[14];  // 15th byte (zero-indexed, unsigned 8-bit value)\n    if (wb02_en1 == 0) {wb02_en1=false;}\n    else { wb02_en1 = true; }\n    return wb02_en1; // Return value as is (0-255 range)\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.payload = parseWBO2_EN1(msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 320,
+        "wires": [
+            [
+                "ce3658bf6059281a",
+                "f1df1ac223bc1f0b"
+            ]
+        ]
+    },
+    {
+        "id": "1506d96a2d7c7576",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "WBO2_EN2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 990,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "e4df11c52863e8be",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "WBO2_EN2",
+        "func": "// Function to parse WBO2_EN2 from payload (single unsigned byte)\nfunction parseWBO2_EN2(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract WBO2_EN2\");\n        return null;\n    }\n\n    let wb02_en2 = payload[15];  // 16th byte (zero-indexed, unsigned 8-bit value)\n    if (wb02_en2 == 0) { wb02_en2 = false; }\n    else { wb02_en2 = true; }\n    return wb02_en2; // Return value as is (0-255 range)\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.payload = parseWBO2_EN2(msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 360,
+        "wires": [
+            [
+                "1506d96a2d7c7576",
+                "2a95486e303cbc80"
+            ]
+        ]
+    },
+    {
+        "id": "b4e64a7288a30906",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "AFR_TGT1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "AFR_TGT1",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 990,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "10be8713532319cb",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "AFR_TGT1",
+        "func": "// Function to parse AFR_TGT1 from payload (single unsigned byte)\nfunction parseAFR_TGT1(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract AFR_TGT1\");\n        return null;\n    }\n\n    let afr_tgt1 = payload[12] / 10;  // 13th byte (zero-indexed, unsigned 8-bit value)\n    return afr_tgt1; // Return value as is (0-255 range)\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.AFR_TGT1 = parseAFR_TGT1(msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 240,
+        "wires": [
+            [
+                "b4e64a7288a30906",
+                "a6bf3b2c009c5c59"
+            ]
+        ]
+    },
+    {
+        "id": "035c22adaef1fc04",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "Inject Event Schedule",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "squirt",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "5bed35515bf3fcae",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Inject Event Schedule",
+        "func": "// Function to parse squirt from payload (single unsigned byte)\nfunction parseSquirt(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract squirt\");\n        return null;\n    }\n\n    let squirt = payload[10];  // 11th byte (zero-indexed, unsigned 8-bit value)\n    return squirt; // Return value as is (0-255 range)\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.squirt = parseSquirt(msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 200,
+        "wires": [
+            [
+                "035c22adaef1fc04",
+                "34d8e2c575bbaf07"
+            ]
+        ]
+    },
+    {
+        "id": "2c04e9b475e26911",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "Engine Ready",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1000,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "ce62e9123816bb0c",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Engine",
+        "func": "// Function to parse engine from payload and decode its bit flags\nfunction parseEngine(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract engine\");\n        return null;\n    }\n    \n    let engine = payload[24];  // Extract single unsigned byte (27th byte, zero-indexed)\n    \n    // Decode individual bit flags\n    return {\n        \"Engine\": engine,  // Original byte value (0-255)\n        \"Ready\": (engine & (1 << 0)) != 0,\n        \"Crank\": (engine & (1 << 1)) != 0,\n        \"StartW\": (engine & (1 << 2)) != 0,\n        \"Warmup\": (engine & (1 << 3)) != 0,\n        \"TPSAEN\": (engine & (1 << 4)) != 0,\n        \"TPSDEN\": (engine & (1 << 5)) != 0\n    };\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.engine = parseEngine(msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 740,
+        "wires": [
+            [
+                "482980af6000ef29",
+                "c5579306a5da8edc",
+                "12afe7a03fe1bb27",
+                "15de31a333e6c9ce",
+                "3a635d2bb89b752f",
+                "dd886c0657b96deb"
+            ]
+        ]
+    },
+    {
+        "id": "71c6eaa9bfd9aad5",
+        "type": "ui_gauge",
+        "z": "d8527068f6276de4",
+        "name": "",
+        "group": "65857eac08272827",
+        "order": 1,
+        "width": "8",
+        "height": "8",
+        "gtype": "gage",
+        "title": "Injection PW1",
+        "label": "mSec",
+        "format": "{{msg.injectionPW1}}",
+        "min": 0,
+        "max": "25.5",
+        "colors": [
+            "#ca3838",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "1",
+        "seg2": "25",
+        "diff": false,
+        "className": "",
+        "x": 760,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "465dc144e53d41e6",
+        "type": "ui_gauge",
+        "z": "d8527068f6276de4",
+        "name": "",
+        "group": "65857eac08272827",
+        "order": 2,
+        "width": "8",
+        "height": "8",
+        "gtype": "gage",
+        "title": "Injection PW2",
+        "label": "mSec",
+        "format": "{{msg.injectionPW2}}",
+        "min": 0,
+        "max": "25.5",
+        "colors": [
+            "#ca3838",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "1",
+        "seg2": "25",
+        "diff": false,
+        "className": "",
+        "x": 760,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "46a9d2f64f97e54f",
+        "type": "ui_gauge",
+        "z": "d8527068f6276de4",
+        "name": "",
+        "group": "65857eac08272827",
+        "order": 3,
+        "width": "8",
+        "height": "8",
+        "gtype": "gage",
+        "title": "Rotating Speed",
+        "label": "RPM",
+        "format": "{{msg.rotatingSpeed}}",
+        "min": 0,
+        "max": "12000",
+        "colors": [
+            "#ca3838",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "700",
+        "seg2": "9000",
+        "diff": false,
+        "className": "",
+        "x": 760,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "4d79176a362c79fd",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "Ignition Advance Angle",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "ignitionAdvanceAngle",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "987fb6b455d36edb",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Ignition Advance Angle",
+        "func": "// Function to parse ignition advance angle from payload\nfunction parseIgnitionAdvanceAngle(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract ignition advance angle\");\n        return null;\n    }\n    \n    let lowByte = payload[8];  // 9th byte (zero-indexed)\n    let highByte = payload[9]; // 10th byte (zero-indexed)\n    \n    let rawValue = (highByte << 8) | lowByte; // Combine bytes (little-endian)\n    // Convert to signed 16-bit integer\n    if (rawValue & 0x8000) {\n        rawValue = rawValue - 0x10000;\n    }\n    let ignitionAngle = rawValue * 10.0; // Convert to ignition advance angle (assuming scale factor of 10)\n    \n    return ignitionAngle;\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.ignitionAdvanceAngle = parseIgnitionAdvanceAngle(msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 160,
+        "wires": [
+            [
+                "4d79176a362c79fd",
+                "9a7f228793d33838"
+            ]
+        ]
+    },
+    {
+        "id": "9a7f228793d33838",
+        "type": "ui_gauge",
+        "z": "d8527068f6276de4",
+        "name": "",
+        "group": "65857eac08272827",
+        "order": 4,
+        "width": "8",
+        "height": "8",
+        "gtype": "gage",
+        "title": "Ignition Advance Angle",
+        "label": "degrees",
+        "format": "{{msg.ignitionAdvanceAngle}}",
+        "min": 0,
+        "max": "50",
+        "colors": [
+            "#ffffff",
+            "#ffffff",
+            "#ffffff"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 780,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "4929c68c1032ce38",
+        "type": "ui_gauge",
+        "z": "d8527068f6276de4",
+        "name": "",
+        "group": "65857eac08272827",
+        "order": 5,
+        "width": "8",
+        "height": "8",
+        "gtype": "gage",
+        "title": "Manifold Air Pressure",
+        "label": "RPM",
+        "format": "{{msg.manifoldAirPressure}}",
+        "min": 0,
+        "max": "255",
+        "colors": [
+            "#ca3838",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "10",
+        "seg2": "250",
+        "diff": false,
+        "className": "",
+        "x": 780,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "83f57acc47658778",
+        "type": "ui_gauge",
+        "z": "d8527068f6276de4",
+        "name": "",
+        "group": "65857eac08272827",
+        "order": 6,
+        "width": "8",
+        "height": "8",
+        "gtype": "gage",
+        "title": "Manifold Air Temperature",
+        "label": "F",
+        "format": "{{msg.manifoldTemperature}}",
+        "min": 0,
+        "max": "250",
+        "colors": [
+            "#ca3838",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "0",
+        "seg2": "220",
+        "diff": false,
+        "className": "",
+        "x": 790,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "f514d53ced22ba87",
+        "type": "ui_gauge",
+        "z": "d8527068f6276de4",
+        "name": "",
+        "group": "65857eac08272827",
+        "order": 7,
+        "width": "8",
+        "height": "8",
+        "gtype": "gage",
+        "title": "Cylinder Temperature",
+        "label": "F",
+        "format": "{{msg.cylinderTemperature}}",
+        "min": "-40",
+        "max": "250",
+        "colors": [
+            "#ca3838",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "0",
+        "seg2": "220",
+        "diff": false,
+        "className": "",
+        "x": 780,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "eef98cd53bdf4dfb",
+        "type": "ui_gauge",
+        "z": "d8527068f6276de4",
+        "name": "",
+        "group": "65857eac08272827",
+        "order": 8,
+        "width": "8",
+        "height": "8",
+        "gtype": "gage",
+        "title": "Throttle Position",
+        "label": "%",
+        "format": "{{msg.throttlePosition}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#e6e600",
+            "#e6e600",
+            "#e6e600"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 760,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "a3681a48c40ca379",
+        "type": "ui_gauge",
+        "z": "d8527068f6276de4",
+        "name": "",
+        "group": "65857eac08272827",
+        "order": 9,
+        "width": "8",
+        "height": "8",
+        "gtype": "gage",
+        "title": "Battery Voltage",
+        "label": "Volts",
+        "format": "{{msg.batteryVoltage}}",
+        "min": "7",
+        "max": "15",
+        "colors": [
+            "#ca3838",
+            "#019d20",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 760,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "36bc3c5f8559e46d",
+        "type": "ui_gauge",
+        "z": "d8527068f6276de4",
+        "name": "",
+        "group": "65857eac08272827",
+        "order": 10,
+        "width": "8",
+        "height": "8",
+        "gtype": "gage",
+        "title": "Barometric Pressure",
+        "label": "RPM",
+        "format": "{{msg.barometricPressure}}",
+        "min": 0,
+        "max": "255",
+        "colors": [
+            "#ca3838",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "10",
+        "seg2": "250",
+        "diff": false,
+        "className": "",
+        "x": 780,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "34d8e2c575bbaf07",
+        "type": "ui_text",
+        "z": "d8527068f6276de4",
+        "group": "4f1c1adc39061dd0",
+        "order": 1,
+        "width": "5",
+        "height": "1",
+        "name": "",
+        "label": "Inject Event Schedule",
+        "format": "{{msg.squirt}}",
+        "layout": "row-left",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 780,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "a6bf3b2c009c5c59",
+        "type": "ui_text",
+        "z": "d8527068f6276de4",
+        "group": "4f1c1adc39061dd0",
+        "order": 2,
+        "width": "5",
+        "height": "1",
+        "name": "",
+        "label": "AFR_TGT1",
+        "format": "{{msg.AFR_TGT1}}",
+        "layout": "row-left",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 750,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "52e938195128f525",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "AFR_TGT2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "AFR_TGT2",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 990,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "4df654340c1ebd88",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "AFR_TGT2",
+        "func": "// Function to parse AFR_TGT2 from payload (single unsigned byte)\nfunction parseAFR_TGT2(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract AFR_TGT2\");\n        return null;\n    }\n\n    let afr_tgt2 = payload[13] / 10;  // 14th byte (zero-indexed, unsigned 8-bit value)\n    return afr_tgt2; // Return value as is (0-255 range)\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.AFR_TGT2 = parseAFR_TGT2(msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 280,
+        "wires": [
+            [
+                "52e938195128f525",
+                "46f7b11c48b5abe6"
+            ]
+        ]
+    },
+    {
+        "id": "46f7b11c48b5abe6",
+        "type": "ui_text",
+        "z": "d8527068f6276de4",
+        "group": "4f1c1adc39061dd0",
+        "order": 4,
+        "width": "4",
+        "height": "1",
+        "name": "",
+        "label": "AFR_TGT2",
+        "format": "{{msg.AFR_TGT2}}",
+        "layout": "row-left",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 750,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "2a95486e303cbc80",
+        "type": "ui_led",
+        "z": "d8527068f6276de4",
+        "order": 5,
+        "group": "4f1c1adc39061dd0",
+        "width": "5",
+        "height": "1",
+        "label": "WBO2_EN2",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#ff0000",
+                "value": "false",
+                "valueType": "bool"
+            },
+            {
+                "color": "#008000",
+                "value": "true",
+                "valueType": "bool"
+            }
+        ],
+        "allowColorForValueInMessage": true,
+        "shape": "square",
+        "showGlow": false,
+        "name": "WBO2_EN2",
+        "x": 750,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "f1df1ac223bc1f0b",
+        "type": "ui_led",
+        "z": "d8527068f6276de4",
+        "order": 3,
+        "group": "4f1c1adc39061dd0",
+        "width": "5",
+        "height": "1",
+        "label": "WBO2_EN1",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#ff0000",
+                "value": "false",
+                "valueType": "bool"
+            },
+            {
+                "color": "#008000",
+                "value": "true",
+                "valueType": "bool"
+            }
+        ],
+        "allowColorForValueInMessage": true,
+        "shape": "square",
+        "showGlow": false,
+        "name": "WBO2_EN1",
+        "x": 750,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "482980af6000ef29",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Engine Ready",
+        "func": "msg.payload = msg.engine.Ready\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 640,
+        "wires": [
+            [
+                "2c04e9b475e26911",
+                "ed1e876b1652649d"
+            ]
+        ]
+    },
+    {
+        "id": "ed1e876b1652649d",
+        "type": "ui_led",
+        "z": "d8527068f6276de4",
+        "order": 6,
+        "group": "4f1c1adc39061dd0",
+        "width": "5",
+        "height": "1",
+        "label": "Engine Ready",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#ff0000",
+                "value": "false",
+                "valueType": "bool"
+            },
+            {
+                "color": "#008000",
+                "value": "true",
+                "valueType": "bool"
+            }
+        ],
+        "allowColorForValueInMessage": true,
+        "shape": "square",
+        "showGlow": false,
+        "name": "Engine Ready",
+        "x": 760,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "f0814166536d295a",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "Engine Crank",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1000,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "c5579306a5da8edc",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Engine Crank",
+        "func": "msg.payload = msg.engine.Crank\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 680,
+        "wires": [
+            [
+                "f0814166536d295a",
+                "6d7222a3f3f940e3"
+            ]
+        ]
+    },
+    {
+        "id": "6d7222a3f3f940e3",
+        "type": "ui_led",
+        "z": "d8527068f6276de4",
+        "order": 7,
+        "group": "4f1c1adc39061dd0",
+        "width": "5",
+        "height": "1",
+        "label": "Engine Crank",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#ff0000",
+                "value": "false",
+                "valueType": "bool"
+            },
+            {
+                "color": "#008000",
+                "value": "true",
+                "valueType": "bool"
+            }
+        ],
+        "allowColorForValueInMessage": true,
+        "shape": "square",
+        "showGlow": false,
+        "name": "Engine Crank",
+        "x": 760,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "06072b1eee0e2018",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "Engine Start Warmup",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "12afe7a03fe1bb27",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Engine Start Warmup",
+        "func": "msg.payload = msg.engine.Ready\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 720,
+        "wires": [
+            [
+                "06072b1eee0e2018",
+                "c357bd7bcdfa0f79"
+            ]
+        ]
+    },
+    {
+        "id": "c357bd7bcdfa0f79",
+        "type": "ui_led",
+        "z": "d8527068f6276de4",
+        "order": 8,
+        "group": "4f1c1adc39061dd0",
+        "width": "5",
+        "height": "1",
+        "label": "Engine Start Warmup",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#ff0000",
+                "value": "false",
+                "valueType": "bool"
+            },
+            {
+                "color": "#008000",
+                "value": "true",
+                "valueType": "bool"
+            }
+        ],
+        "allowColorForValueInMessage": true,
+        "shape": "square",
+        "showGlow": false,
+        "name": "Engine Start Warmup",
+        "x": 780,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "f7e1a81fd5e13056",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "Engine Engine Warmup",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1030,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "3a635d2bb89b752f",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Engine Warmup",
+        "func": "msg.payload = msg.engine.Crank\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 760,
+        "wires": [
+            [
+                "f7e1a81fd5e13056",
+                "baf6686114f37cc4"
+            ]
+        ]
+    },
+    {
+        "id": "baf6686114f37cc4",
+        "type": "ui_led",
+        "z": "d8527068f6276de4",
+        "order": 9,
+        "group": "4f1c1adc39061dd0",
+        "width": "5",
+        "height": "1",
+        "label": "Engine Warmup",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#ff0000",
+                "value": "false",
+                "valueType": "bool"
+            },
+            {
+                "color": "#008000",
+                "value": "true",
+                "valueType": "bool"
+            }
+        ],
+        "allowColorForValueInMessage": true,
+        "shape": "square",
+        "showGlow": false,
+        "name": "Engine Warmup",
+        "x": 760,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "6a89a1f3e3e62bf9",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "TPS Acceleration",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1010,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "dd886c0657b96deb",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "TPS Acceleration",
+        "func": "msg.payload = msg.engine.Ready\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 800,
+        "wires": [
+            [
+                "6a89a1f3e3e62bf9",
+                "8e4f3c6e4432baac"
+            ]
+        ]
+    },
+    {
+        "id": "8e4f3c6e4432baac",
+        "type": "ui_led",
+        "z": "d8527068f6276de4",
+        "order": 10,
+        "group": "4f1c1adc39061dd0",
+        "width": "5",
+        "height": "1",
+        "label": "TPS Acceleration",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#ff0000",
+                "value": "false",
+                "valueType": "bool"
+            },
+            {
+                "color": "#008000",
+                "value": "true",
+                "valueType": "bool"
+            }
+        ],
+        "allowColorForValueInMessage": true,
+        "shape": "square",
+        "showGlow": false,
+        "name": "TPS Acceleration",
+        "x": 770,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "1f3f94cdf4deadc4",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "name": "TPS Deacceleration",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "15de31a333e6c9ce",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "TPS Deacceleration",
+        "func": "msg.payload = msg.engine.Crank\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 840,
+        "wires": [
+            [
+                "1f3f94cdf4deadc4",
+                "572290af806ce866"
+            ]
+        ]
+    },
+    {
+        "id": "572290af806ce866",
+        "type": "ui_led",
+        "z": "d8527068f6276de4",
+        "order": 11,
+        "group": "4f1c1adc39061dd0",
+        "width": "5",
+        "height": "1",
+        "label": "TPS Deacceleration",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#ff0000",
+                "value": "false",
+                "valueType": "bool"
+            },
+            {
+                "color": "#008000",
+                "value": "true",
+                "valueType": "bool"
+            }
+        ],
+        "allowColorForValueInMessage": true,
+        "shape": "square",
+        "showGlow": false,
+        "name": "TPS Deacceleration",
+        "x": 780,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "2d39083cbb646833",
+        "type": "inject",
+        "z": "d8527068f6276de4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "3E 00 7D 11 4E 11 00 00 64 00 00 01 93 93 00 00 F6 03 F6 03 83 02 D8 FF 00 00 77 00 00 00 00 00 00 00 64 00 64 00 65 00 64 00 00 00 64 00 64 00 65 00 24 00 24 00 D0 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00 5E 01 00 00 51 08 00 00 00 00 00 00",
+        "payloadType": "str",
+        "x": 130,
+        "y": 300,
+        "wires": [
+            [
+                "d9b8cc05fcf858c5"
+            ]
+        ]
+    },
+    {
+        "id": "65857eac08272827",
+        "type": "ui_group",
+        "name": "ECU Guages",
+        "tab": "9c6d5c30c4a42d69",
+        "order": 2,
+        "disp": true,
+        "width": "40",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "4f1c1adc39061dd0",
+        "type": "ui_group",
+        "name": "ECU Data",
+        "tab": "9c6d5c30c4a42d69",
+        "order": 1,
+        "disp": true,
+        "width": "32",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "9c6d5c30c4a42d69",
+        "type": "ui_tab",
+        "name": "ECU Guages",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
