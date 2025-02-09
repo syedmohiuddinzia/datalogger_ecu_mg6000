@@ -85,20 +85,20 @@ Building on the foundation of Datalogger 1.0, we developed Datalogger 2.0, lever
 - **Improved Data Handling:** The ability to delete, download, and parse data via the server simplifies log management.
 
 ## Block Diagram
-![block-diagram](FIG/block-diagram.png)
+![block-diagram]([FIG/block-diagram.png](https://github.com/syedmohiuddinzia/datalogger_ecu_mg6000/blob/main/v2.0/fig/block-diagram.png))
 ## Electronic Circuit
-![design](FIG/Design.png)
+![design]([FIG/Design.png](https://github.com/syedmohiuddinzia/datalogger_ecu_mg6000/blob/main/v2.0/fig/Design.png))
 ## Programming Scripts
 - **ESP32 Code:**
-[Arduino Code for ESP32](DataLogger_V2.0/ECU_SDLOG_HTTP/ECU_SDLOG_HTTP.ino)
+[Arduino Code for ESP32]([DataLogger_V2.0/ECU_SDLOG_HTTP/ECU_SDLOG_HTTP.ino](https://github.com/syedmohiuddinzia/datalogger_ecu_mg6000/blob/main/v2.0/ECU_SDLOG_HTTP.ino))
 - **HTML file for ESP32 Webserver**
-[ESP32 Webserver HTML](DataLogger_V2.0/ECU_SDLOG_HTTP/index.html)
+[ESP32 Webserver HTML]([DataLogger_V2.0/ECU_SDLOG_HTTP/index.html](https://github.com/syedmohiuddinzia/datalogger_ecu_mg6000/blob/main/v2.0/index.html))
 - **Node-Red Code:**
-[Node Red Flows File](DataLogger_V2.0/flows.json)
+[Node Red Flows File]([DataLogger_V2.0/flows.json](https://github.com/syedmohiuddinzia/datalogger_ecu_mg6000/blob/main/v2.0/flows.json))
 - **CSV Decrypt Code:**
-[Decrypt string HEX to String](DataLogger_V2.0/decryptCSV.py)
+[Decrypt string HEX to String]([DataLogger_V2.0/decryptCSV.py](https://github.com/syedmohiuddinzia/datalogger_ecu_mg6000/blob/main/v2.0/decryptCSV.py))
 - **Plot Graph Code:**
-[Plot graph from CSV data](DataLogger_V2.0/CSV_read.py)
+[Plot graph from CSV data]([DataLogger_V2.0/CSV_read.py](https://github.com/syedmohiuddinzia/datalogger_ecu_mg6000/blob/main/v2.0/CSV_read.py))
 
 
 ## Instructions
