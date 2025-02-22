@@ -23,8 +23,8 @@
         "authType": "",
         "senderr": true,
         "headers": [],
-        "x": 190,
-        "y": 200,
+        "x": 230,
+        "y": 180,
         "wires": [
             [
                 "d9b8cc05fcf858c5"
@@ -52,8 +52,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 170,
-        "y": 160,
+        "x": 210,
+        "y": 140,
         "wires": [
             [
                 "7fc62c4ab0390345"
@@ -73,8 +73,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1020,
-        "y": 520,
+        "x": 1220,
+        "y": 560,
         "wires": []
     },
     {
@@ -89,14 +89,13 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 210,
-        "y": 260,
+        "x": 410,
+        "y": 300,
         "wires": [
             [
                 "f204b019b06578ae",
                 "78f04d766b8d77f7",
                 "c938d9823336e975",
-                "987fb6b455d36edb",
                 "5bed35515bf3fcae",
                 "10be8713532319cb",
                 "4df654340c1ebd88",
@@ -108,7 +107,8 @@
                 "641443d709aa3123",
                 "542e32c55c04b45a",
                 "0eb6eb5b1174e755",
-                "ce62e9123816bb0c"
+                "ce62e9123816bb0c",
+                "987fb6b455d36edb"
             ]
         ]
     },
@@ -124,8 +124,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 540,
-        "y": 440,
+        "x": 740,
+        "y": 480,
         "wires": [
             [
                 "ae2befe8bbcef78d",
@@ -145,8 +145,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 540,
-        "y": 400,
+        "x": 740,
+        "y": 440,
         "wires": [
             [
                 "f48495a48acc19a2",
@@ -166,8 +166,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 540,
-        "y": 520,
+        "x": 740,
+        "y": 560,
         "wires": [
             [
                 "811db637f9603a13",
@@ -188,8 +188,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1020,
-        "y": 400,
+        "x": 1220,
+        "y": 440,
         "wires": []
     },
     {
@@ -205,8 +205,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1020,
-        "y": 440,
+        "x": 1220,
+        "y": 480,
         "wires": []
     },
     {
@@ -222,8 +222,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1030,
-        "y": 480,
+        "x": 1230,
+        "y": 520,
         "wires": []
     },
     {
@@ -238,8 +238,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 520,
-        "y": 600,
+        "x": 720,
+        "y": 640,
         "wires": [
             [
                 "e1427ab757c1132c",
@@ -259,8 +259,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 520,
-        "y": 560,
+        "x": 720,
+        "y": 600,
         "wires": [
             [
                 "e58c549b8475d228",
@@ -280,8 +280,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 550,
-        "y": 480,
+        "x": 750,
+        "y": 520,
         "wires": [
             [
                 "34d5abfea9b93de2",
@@ -302,8 +302,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1000,
-        "y": 560,
+        "x": 1200,
+        "y": 600,
         "wires": []
     },
     {
@@ -319,8 +319,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1000,
-        "y": 600,
+        "x": 1200,
+        "y": 640,
         "wires": []
     },
     {
@@ -336,8 +336,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1000,
-        "y": 120,
+        "x": 1200,
+        "y": 160,
         "wires": []
     },
     {
@@ -345,15 +345,15 @@
         "type": "function",
         "z": "d8527068f6276de4",
         "name": "Injection PW1",
-        "func": "// Function to parse injection PW1 from payload\nfunction parseInjectionPW1(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract injection PW1\");\n        return null;\n    }\n    \n    let lowByte = payload[2];  // 3rd byte (zero-indexed)\n    let highByte = payload[3]; // 4th byte (zero-indexed)\n    \n    let rawValue = (highByte << 8) | lowByte; // Combine bytes (little-endian)\n    let injPW1 = rawValue; // Convert to injection PW1 (assuming scale factor of 10)\n    \n    return injPW1;\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.injectionPW1 = parseInjectionPW1(msg.payload);\nreturn msg;\n",
+        "func": "// Function to parse injection PW1 from payload\nfunction parseInjectionPW1(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract injection PW1\");\n        return null;\n    }\n    \n    let lowByte = payload[2];  // 3rd byte (zero-indexed)\n    let highByte = payload[3]; // 4th byte (zero-indexed)\n    \n    let rawValue = (highByte << 8) | lowByte; // Combine bytes (little-endian)\n    let injPW1 = rawValue; // Convert to injection PW1 (assuming scale factor of 10)\n    \n    return injPW1/1000;\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.injectionPW1 = parseInjectionPW1(msg.payload);\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 520,
-        "y": 40,
+        "x": 720,
+        "y": 80,
         "wires": [
             [
                 "d55ccc4d569a77d9",
@@ -373,8 +373,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 100,
-        "y": 400,
+        "x": 300,
+        "y": 440,
         "wires": [
             [
                 "7213e2d674e56696"
@@ -393,8 +393,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 520,
-        "y": 120,
+        "x": 720,
+        "y": 160,
         "wires": [
             [
                 "57ab73812c8b4740",
@@ -415,8 +415,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 260,
-        "y": 460,
+        "x": 300,
+        "y": 480,
         "wires": []
     },
     {
@@ -432,8 +432,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1000,
-        "y": 40,
+        "x": 1200,
+        "y": 80,
         "wires": []
     },
     {
@@ -449,8 +449,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1000,
-        "y": 80,
+        "x": 1200,
+        "y": 120,
         "wires": []
     },
     {
@@ -458,15 +458,15 @@
         "type": "function",
         "z": "d8527068f6276de4",
         "name": "Injection PW2",
-        "func": "// Function to parse injection PW2 from payload\nfunction parseInjectionPW2(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract injection PW2\");\n        return null;\n    }\n\n    let lowByte = payload[4];  // 5th byte (zero-indexed)\n    let highByte = payload[5]; // 6th byte (zero-indexed)\n\n    let rawValue = (highByte << 8) | lowByte; // Combine bytes (little-endian)\n    let injPW1 = rawValue; // Convert to injection PW2 (assuming scale factor of 10)\n\n    return injPW1;\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.injectionPW2 = parseInjectionPW2(msg.payload);\nreturn msg;\n",
+        "func": "// Function to parse injection PW2 from payload\nfunction parseInjectionPW2(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract injection PW2\");\n        return null;\n    }\n\n    let lowByte = payload[4];  // 5th byte (zero-indexed)\n    let highByte = payload[5]; // 6th byte (zero-indexed)\n\n    let rawValue = (highByte << 8) | lowByte; // Combine bytes (little-endian)\n    let injPW2 = rawValue; // Convert to injection PW2 (assuming scale factor of 10)\n\n    return injPW2/1000;\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.injectionPW2 = parseInjectionPW2(msg.payload);\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 520,
-        "y": 80,
+        "x": 720,
+        "y": 120,
         "wires": [
             [
                 "9f6afd62128074d4",
@@ -487,8 +487,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 990,
-        "y": 320,
+        "x": 1190,
+        "y": 360,
         "wires": []
     },
     {
@@ -503,8 +503,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 510,
-        "y": 320,
+        "x": 710,
+        "y": 360,
         "wires": [
             [
                 "ce3658bf6059281a",
@@ -525,8 +525,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 990,
-        "y": 360,
+        "x": 1190,
+        "y": 400,
         "wires": []
     },
     {
@@ -541,8 +541,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 510,
-        "y": 360,
+        "x": 710,
+        "y": 400,
         "wires": [
             [
                 "1506d96a2d7c7576",
@@ -563,8 +563,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 990,
-        "y": 240,
+        "x": 1190,
+        "y": 280,
         "wires": []
     },
     {
@@ -579,8 +579,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 510,
-        "y": 240,
+        "x": 710,
+        "y": 280,
         "wires": [
             [
                 "b4e64a7288a30906",
@@ -601,8 +601,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1020,
-        "y": 200,
+        "x": 1220,
+        "y": 240,
         "wires": []
     },
     {
@@ -617,8 +617,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 540,
-        "y": 200,
+        "x": 740,
+        "y": 240,
         "wires": [
             [
                 "035c22adaef1fc04",
@@ -639,8 +639,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1000,
-        "y": 640,
+        "x": 1200,
+        "y": 680,
         "wires": []
     },
     {
@@ -655,8 +655,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 340,
-        "y": 740,
+        "x": 540,
+        "y": 780,
         "wires": [
             [
                 "482980af6000ef29",
@@ -692,8 +692,8 @@
         "seg2": "25",
         "diff": false,
         "className": "",
-        "x": 760,
-        "y": 20,
+        "x": 960,
+        "y": 60,
         "wires": []
     },
     {
@@ -720,8 +720,8 @@
         "seg2": "25",
         "diff": false,
         "className": "",
-        "x": 760,
-        "y": 60,
+        "x": 960,
+        "y": 100,
         "wires": []
     },
     {
@@ -748,8 +748,8 @@
         "seg2": "9000",
         "diff": false,
         "className": "",
-        "x": 760,
-        "y": 100,
+        "x": 960,
+        "y": 140,
         "wires": []
     },
     {
@@ -765,8 +765,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1020,
-        "y": 160,
+        "x": 1220,
+        "y": 200,
         "wires": []
     },
     {
@@ -774,18 +774,17 @@
         "type": "function",
         "z": "d8527068f6276de4",
         "name": "Ignition Advance Angle",
-        "func": "// Function to parse ignition advance angle from payload\nfunction parseIgnitionAdvanceAngle(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract ignition advance angle\");\n        return null;\n    }\n    \n    let lowByte = payload[8];  // 9th byte (zero-indexed)\n    let highByte = payload[9]; // 10th byte (zero-indexed)\n    \n    let rawValue = (highByte << 8) | lowByte; // Combine bytes (little-endian)\n    // Convert to signed 16-bit integer\n    if (rawValue & 0x8000) {\n        rawValue = rawValue - 0x10000;\n    }\n    let ignitionAngle = rawValue * 10.0; // Convert to ignition advance angle (assuming scale factor of 10)\n    \n    return ignitionAngle;\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.ignitionAdvanceAngle = parseIgnitionAdvanceAngle(msg.payload);\nreturn msg;\n",
+        "func": "// Function to parse ignition advance angle from payload\nfunction parseIgnitionAdvanceAngle(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract ignition advance angle\");\n        return null;\n    }\n    \n    let lowByte = payload[8];  // 9th byte (zero-indexed)\n    let highByte = payload[9]; // 10th byte (zero-indexed)\n    \n    let rawValue = (highByte << 8) | lowByte; // Combine bytes (little-endian)\n    // Convert to signed 16-bit integer\n    // if (rawValue & 0x8000) {\n    //     rawValue = rawValue - 0x10000;\n    // }\n    let ignitionAngle = rawValue * 10.0; // Convert to ignition advance angle (assuming scale factor of 10)\n    \n    return ignitionAngle;\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.ignitionAdvanceAngle = parseIgnitionAdvanceAngle(msg.payload);\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 540,
-        "y": 160,
+        "x": 740,
+        "y": 200,
         "wires": [
             [
-                "4d79176a362c79fd",
                 "9a7f228793d33838"
             ]
         ]
@@ -814,8 +813,8 @@
         "seg2": "",
         "diff": false,
         "className": "",
-        "x": 780,
-        "y": 140,
+        "x": 980,
+        "y": 180,
         "wires": []
     },
     {
@@ -842,8 +841,8 @@
         "seg2": "250",
         "diff": false,
         "className": "",
-        "x": 780,
-        "y": 420,
+        "x": 980,
+        "y": 460,
         "wires": []
     },
     {
@@ -870,8 +869,8 @@
         "seg2": "220",
         "diff": false,
         "className": "",
-        "x": 790,
-        "y": 460,
+        "x": 990,
+        "y": 500,
         "wires": []
     },
     {
@@ -898,8 +897,8 @@
         "seg2": "220",
         "diff": false,
         "className": "",
-        "x": 780,
-        "y": 500,
+        "x": 980,
+        "y": 540,
         "wires": []
     },
     {
@@ -926,8 +925,8 @@
         "seg2": "",
         "diff": false,
         "className": "",
-        "x": 760,
-        "y": 540,
+        "x": 960,
+        "y": 580,
         "wires": []
     },
     {
@@ -954,8 +953,8 @@
         "seg2": "",
         "diff": false,
         "className": "",
-        "x": 760,
-        "y": 580,
+        "x": 960,
+        "y": 620,
         "wires": []
     },
     {
@@ -982,8 +981,8 @@
         "seg2": "250",
         "diff": false,
         "className": "",
-        "x": 780,
-        "y": 380,
+        "x": 980,
+        "y": 420,
         "wires": []
     },
     {
@@ -1003,8 +1002,8 @@
         "font": "",
         "fontSize": 16,
         "color": "#000000",
-        "x": 780,
-        "y": 180,
+        "x": 980,
+        "y": 220,
         "wires": []
     },
     {
@@ -1024,8 +1023,8 @@
         "font": "",
         "fontSize": 16,
         "color": "#000000",
-        "x": 750,
-        "y": 220,
+        "x": 950,
+        "y": 260,
         "wires": []
     },
     {
@@ -1041,8 +1040,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 990,
-        "y": 280,
+        "x": 1190,
+        "y": 320,
         "wires": []
     },
     {
@@ -1057,8 +1056,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 510,
-        "y": 280,
+        "x": 710,
+        "y": 320,
         "wires": [
             [
                 "52e938195128f525",
@@ -1083,8 +1082,8 @@
         "font": "",
         "fontSize": 16,
         "color": "#000000",
-        "x": 750,
-        "y": 260,
+        "x": 950,
+        "y": 300,
         "wires": []
     },
     {
@@ -1114,8 +1113,8 @@
         "shape": "square",
         "showGlow": false,
         "name": "WBO2_EN2",
-        "x": 750,
-        "y": 340,
+        "x": 950,
+        "y": 380,
         "wires": []
     },
     {
@@ -1145,8 +1144,8 @@
         "shape": "square",
         "showGlow": false,
         "name": "WBO2_EN1",
-        "x": 750,
-        "y": 300,
+        "x": 950,
+        "y": 340,
         "wires": []
     },
     {
@@ -1161,8 +1160,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 520,
-        "y": 640,
+        "x": 720,
+        "y": 680,
         "wires": [
             [
                 "2c04e9b475e26911",
@@ -1197,8 +1196,8 @@
         "shape": "square",
         "showGlow": false,
         "name": "Engine Ready",
-        "x": 760,
-        "y": 620,
+        "x": 960,
+        "y": 660,
         "wires": []
     },
     {
@@ -1214,8 +1213,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1000,
-        "y": 680,
+        "x": 1200,
+        "y": 720,
         "wires": []
     },
     {
@@ -1230,8 +1229,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 520,
-        "y": 680,
+        "x": 720,
+        "y": 720,
         "wires": [
             [
                 "f0814166536d295a",
@@ -1266,8 +1265,8 @@
         "shape": "square",
         "showGlow": false,
         "name": "Engine Crank",
-        "x": 760,
-        "y": 660,
+        "x": 960,
+        "y": 700,
         "wires": []
     },
     {
@@ -1283,8 +1282,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1020,
-        "y": 720,
+        "x": 1220,
+        "y": 760,
         "wires": []
     },
     {
@@ -1299,8 +1298,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 540,
-        "y": 720,
+        "x": 740,
+        "y": 760,
         "wires": [
             [
                 "06072b1eee0e2018",
@@ -1335,8 +1334,8 @@
         "shape": "square",
         "showGlow": false,
         "name": "Engine Start Warmup",
-        "x": 780,
-        "y": 700,
+        "x": 980,
+        "y": 740,
         "wires": []
     },
     {
@@ -1352,8 +1351,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1030,
-        "y": 760,
+        "x": 1230,
+        "y": 800,
         "wires": []
     },
     {
@@ -1368,8 +1367,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 520,
-        "y": 760,
+        "x": 720,
+        "y": 800,
         "wires": [
             [
                 "f7e1a81fd5e13056",
@@ -1404,8 +1403,8 @@
         "shape": "square",
         "showGlow": false,
         "name": "Engine Warmup",
-        "x": 760,
-        "y": 740,
+        "x": 960,
+        "y": 780,
         "wires": []
     },
     {
@@ -1421,8 +1420,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1010,
-        "y": 800,
+        "x": 1210,
+        "y": 840,
         "wires": []
     },
     {
@@ -1437,8 +1436,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 530,
-        "y": 800,
+        "x": 730,
+        "y": 840,
         "wires": [
             [
                 "6a89a1f3e3e62bf9",
@@ -1473,8 +1472,8 @@
         "shape": "square",
         "showGlow": false,
         "name": "TPS Acceleration",
-        "x": 770,
-        "y": 780,
+        "x": 970,
+        "y": 820,
         "wires": []
     },
     {
@@ -1490,8 +1489,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1020,
-        "y": 840,
+        "x": 1220,
+        "y": 880,
         "wires": []
     },
     {
@@ -1506,8 +1505,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 540,
-        "y": 840,
+        "x": 740,
+        "y": 880,
         "wires": [
             [
                 "1f3f94cdf4deadc4",
@@ -1542,8 +1541,8 @@
         "shape": "square",
         "showGlow": false,
         "name": "TPS Deacceleration",
-        "x": 780,
-        "y": 820,
+        "x": 980,
+        "y": 860,
         "wires": []
     },
     {
@@ -1567,12 +1566,222 @@
         "topic": "",
         "payload": "3E 00 7D 11 4E 11 00 00 64 00 00 01 93 93 00 00 F6 03 F6 03 83 02 D8 FF 00 00 77 00 00 00 00 00 00 00 64 00 64 00 65 00 64 00 00 00 64 00 64 00 65 00 24 00 24 00 D0 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00 5E 01 00 00 51 08 00 00 00 00 00 00",
         "payloadType": "str",
-        "x": 130,
-        "y": 300,
+        "x": 250,
+        "y": 240,
         "wires": [
             [
                 "d9b8cc05fcf858c5"
             ]
+        ]
+    },
+    {
+        "id": "936b015a0d3a9698",
+        "type": "debug",
+        "z": "d8527068f6276de4",
+        "d": true,
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 2040,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "222b04e43e33a7f3",
+        "type": "websocket in",
+        "z": "d8527068f6276de4",
+        "d": true,
+        "name": "",
+        "server": "76f77506c05c6ac3",
+        "client": "",
+        "x": 1610,
+        "y": 480,
+        "wires": [
+            [
+                "5ab6c0528b85b9c4"
+            ]
+        ]
+    },
+    {
+        "id": "5ab6c0528b85b9c4",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "d": true,
+        "name": "parse websocket",
+        "func": "let parameters = [\n    \"Time\", \"Lat\", \"Lng\", \"Alt\", \"Sat\", \"gpsDateTime\",\n    \"AccX\", \"AccY\", \"AccZ\", \"GyrX\", \"GyrY\", \"GyrZ\",\n    \"MagX\", \"MagY\", \"MagZ\", \"Yaw\", \"Pitch\", \"Roll\",\n    \"Heading\", \"TempIMU\", \"Pressure\", \"Altitude\", \"TempBMP\"\n];\n\n// Get the incoming data\nlet payload = msg.payload;\n\n// Split CSV data into an array\nlet values = payload.split(\",\");\n\n// Convert into a JSON object\nlet parsedData = {};\nfor (let i = 0; i < parameters.length; i++) {\n    parsedData[parameters[i]] = values[i];\n}\n\n// Set the new payload\nmsg.payload = parsedData;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1630,
+        "y": 440,
+        "wires": [
+            [
+                "0888a3c9392eaae1"
+            ]
+        ]
+    },
+    {
+        "id": "8a15917a9983fbf4",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "d": true,
+        "name": "Magnetometer",
+        "func": "var mx = {};\nvar my = {};\nvar mz = {};\nvar m = {};\nmx.payload = msg.payload.MagX;\nmx.topic = 'mx';\nmy.payload = msg.payload.MagY;\nmy.topic = 'my';\nmz.payload = msg.payload.MagZ;\nmz.topic = 'mz';\nreturn [mx, my, mz];",
+        "outputs": 3,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1620,
+        "y": 260,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "10eaf355eef68625",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "d": true,
+        "name": "Accelerometer",
+        "func": "var ax = {};\nvar ay = {};\nvar az = {};\nax.payload = msg.payload.AccX;\nax.topic = 'ax';\nay.payload = msg.payload.AccY;\nay.topic = 'ay';\naz.payload = msg.payload.AccZ;\naz.topic = 'az';\nreturn [ax, ay, az];",
+        "outputs": 3,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1620,
+        "y": 320,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "b10afb9635aff566",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "d": true,
+        "name": "Gyrometer",
+        "func": "var gx = {};\nvar gy = {};\nvar gz = {};\ngx.payload = msg.payload.GyrX;\ngx.topic = 'gx';\ngy.payload = msg.payload.GyrY;\ngy.topic = 'gy';\ngz.payload = msg.payload.GyrZ;\ngz.topic = 'gz';\nreturn [gx, gy, gz];",
+        "outputs": 3,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1610,
+        "y": 380,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "0888a3c9392eaae1",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "d": true,
+        "name": "Gyrometer",
+        "func": "var yaw = {};\nvar pitch = {};\nvar roll = {};\nyaw.payload = msg.payload.Yaw;\nyaw.topic = 'yaw';\npitch.payload = msg.payload.Pitch;\npitch.topic = 'pitch';\nroll.payload = msg.payload.Roll;\nroll.topic = 'roll';\nreturn [yaw, pitch, roll];",
+        "outputs": 3,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1830,
+        "y": 440,
+        "wires": [
+            [
+                "3484231602014452",
+                "936b015a0d3a9698"
+            ],
+            [
+                "3484231602014452",
+                "936b015a0d3a9698"
+            ],
+            [
+                "3484231602014452",
+                "936b015a0d3a9698"
+            ]
+        ]
+    },
+    {
+        "id": "3484231602014452",
+        "type": "ui_chart",
+        "z": "d8527068f6276de4",
+        "d": true,
+        "name": "",
+        "group": "d2e55edb27957f6b",
+        "order": 0,
+        "width": "0",
+        "height": "0",
+        "label": "Orientation",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "yaw, pitch, roll",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 2050,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c271b4306b71c867",
+        "type": "function",
+        "z": "d8527068f6276de4",
+        "name": "Ignition Advance Angle",
+        "func": "// Function to parse ignition advance angle from payload\nfunction parseIgnitionAdvanceAngle(payload) {\n    if (payload.length < 28) {\n        node.error(\"Payload is too short to extract ignition advance angle\");\n        return null;\n    }\n    \n    let lowByte = payload[8];  // 9th byte (zero-indexed)\n    let highByte = payload[9]; // 10th byte (zero-indexed)\n    \n    let rawValue = (highByte << 8) | lowByte; // Combine bytes (little-endian)\n    // Convert to signed 16-bit integer\n    if (rawValue & 0x8000) {\n        rawValue = rawValue - 0x10000;\n    }\n    let ignitionAngle = rawValue * 10.0; // Convert to ignition advance angle (assuming scale factor of 10)\n    \n    return ignitionAngle;\n}\n\n// Assuming msg.payload is an array of bytes\nmsg.ignitionAdvanceAngle = parseIgnitionAdvanceAngle(msg.payload);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 760,
+        "wires": [
+            []
         ]
     },
     {
@@ -1598,9 +1807,34 @@
         "className": ""
     },
     {
+        "id": "76f77506c05c6ac3",
+        "type": "websocket-listener",
+        "path": "ws://192.168.1.1/ws",
+        "wholemsg": "false"
+    },
+    {
+        "id": "d2e55edb27957f6b",
+        "type": "ui_group",
+        "name": "IMU",
+        "tab": "f8837b630ab5af67",
+        "order": 1,
+        "disp": true,
+        "width": "24",
+        "collapse": false,
+        "className": ""
+    },
+    {
         "id": "9c6d5c30c4a42d69",
         "type": "ui_tab",
         "name": "ECU Guages",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "f8837b630ab5af67",
+        "type": "ui_tab",
+        "name": "Flight Logger",
         "icon": "dashboard",
         "disabled": false,
         "hidden": false
