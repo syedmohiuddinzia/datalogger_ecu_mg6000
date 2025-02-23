@@ -145,7 +145,7 @@ def print_all_decimal(parsed_data_list):
     
     # Extract and write decimal data to CSV
     decimal_data = [parsed_data[1] for parsed_data in parsed_data_list if parsed_data]
-    write_decimal_to_csv('28jan2025_data.csv', decimal_data)
+    write_decimal_to_csv('DataLogger_V2.0/data-20feb25/output_2.csv', decimal_data)
 
 def read_and_print_data_packet(filename):
     """Read a data packet from the file and print all hex values first, then decimal values."""
@@ -185,4 +185,4 @@ def read_and_print_filled_data_packet(filename):
 # read_and_print_filled_data_packet('datalog1.txt')
 
 # Call the function to print hex values and log decimal values to CSV
-read_and_print_data_packet('datalog28jan25_original.txt')
+read_and_print_data_packet('DataLogger_V2.0/data-20feb25/output_2.txt')
