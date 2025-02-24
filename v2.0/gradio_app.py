@@ -24,7 +24,9 @@ def plot_data(df, selected_parameters):
     for param in selected_parameters:
         if param in df.columns:
             fig.add_trace(go.Scatter(
-                x=df['Seconds'],  # Assuming 'Seconds' is the time axis
+                # Convert 'Seconds' to 'Time' in HH:MM:SS format
+                x = pd.to_timedelta(df['Seconds'], unit='s').astype(str).str.slice(start=7),  # Keep HH:MM:SS format
+                # x=df['Seconds'],  # Assuming 'Seconds' is the time axis
                 y=df[param], 
                 mode='lines', 
                 name=param
